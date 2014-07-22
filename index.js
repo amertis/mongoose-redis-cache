@@ -31,14 +31,30 @@ mongooseRedisCache = function(mongoose, options, callback) {
   pass = options.pass || "";
   redisOptions = options.options || {};
   prefix = options.prefix || "cache";
-  mongoose.redisClient = client = redis.createClient(port, host, redisOptions);
-  if (pass.length > 0) {
-    client.auth(pass, function(err) {
-      if (callback) {
-        return callback(err);
-      }
-    });
+
+  var client;
+  if(options.cluster_mode)  {
+      var haredis = require('haredis');
+      var client = haredis.createClient(host)
+      client.on("error", function (err) {
+          log.info('Cannot connect to Redis cache using haredis:' + err);
+      });
+      client.on('connect', function () {
+          log.info('Connected to Redis using haredis.');
+      });
+  } else    {
+      client = redis.createClient(port, host, redisOptions);
   }
+    mongoose.redisClient = client;
+
+
+//  if (pass.length > 0) {
+//    client.auth(pass, function(err) {
+//      if (callback) {
+//        return callback(err);
+//      }
+//    });
+//  }
   mongoose.Query.prototype._exec = mongoose.Query.prototype.exec;
   mongoose.Query.prototype.exec = function(callback) {
     var cb, collectionName, expires, fields, hash, key, model, populate, query, schemaOptions, self;
