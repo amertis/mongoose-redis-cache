@@ -37,10 +37,10 @@ mongooseRedisCache = function(mongoose, options, callback) {
       var haredis = require('haredis');
       var client = haredis.createClient(host)
       client.on("error", function (err) {
-          log.info('Cannot connect to Redis cache using haredis:' + err);
+          console.log('Cannot connect to Redis cache using haredis:' + err);
       });
       client.on('connect', function () {
-          log.info('Connected to Redis using haredis.');
+          console.log('Connected to Redis using haredis.');
       });
   } else    {
       client = redis.createClient(port, host, redisOptions);
