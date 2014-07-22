@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "redis": "~0.10.0",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+      "haredis":"latest"
   },
   "devDependencies": {
     "mocha": "~1.17.0",
